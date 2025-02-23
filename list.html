@@ -2,34 +2,127 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Skin links</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap" rel="stylesheet"> 
+  <link
+  href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Protest+Guerrilla&family=Protest+Strike&display=swap"
+  rel="stylesheet">
+
+  <title>Skin Links</title>
+  <style>
+    body {
+      font-family: "Noto Serif JP", sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      text-align: center;
+      margin: 20px;
+    }
+    h1 {
+      color: #bb86fc;
+      font-family: "Protest Strike";
+      font-size: 3.5em;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(192, 192, 192, 0.3);
+      transition: transform 0.2s ease-in-out;
+      width: 200px;
+      text-align: center;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card a {
+      text-decoration: none;
+      color: #bb86fc;
+      font-weight: bold;
+    }
+    .card a:hover {
+      color: #9b5de5;
+    }
+    #searchBar {
+      padding: 10px;
+      width: 50%;
+      margin: 20px auto;
+      display: block;
+      border-radius: 5px;
+      border: 1px solid #bb86fc;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+    }
+    #addSkinContainer {
+      margin-top: 20px;
+    }
+    #addSkinInput {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #bb86fc;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+    }
+    #addSkinButton {
+      padding: 10px;
+      margin-left: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #bb86fc;
+      color: #121212;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Skin links</h1>
-  <ul id="folderList"></ul>
+  <h1>Skin Links</h1>
+  <input type="text" id="searchBar" placeholder="Search folders...">
+  <div class="container" id="folderList"></div>
 
   <script>
-    // Set these to your GitHub details; here it's set to use lolopano's repository
     const owner = 'lolopano';
-    const repo = 'lolopano.github.io'; // Adjust if your repository name is different
+    const repo = 'lolopano.github.io';
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
 
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
         const folderList = document.getElementById('folderList');
-        data.forEach(item => {
-          // Only list items that are directories (folders)
-          if (item.type === 'dir') {
-            const listItem = document.createElement('li');
+        const searchBar = document.getElementById('searchBar');
+        let folders = [];
+
+        function renderFolders(filteredData) {
+          folderList.innerHTML = '';
+          filteredData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
             const link = document.createElement('a');
-            // Construct the URL using the folder name
-            const url = `https://lolopano.github.io/${item.name}`;
+            const url = `./${item.name}`;
             link.href = url;
-            link.textContent = url; // The text of the link
-            listItem.appendChild(link);
-            folderList.appendChild(listItem);
+            link.textContent = item.name;
+            card.appendChild(link);
+            folderList.appendChild(card);
+          });
+        }
+
+        data.forEach(item => {
+          if (item.type === 'dir') {
+            folders.push(item);
           }
+        });
+
+        renderFolders(folders);
+
+        searchBar.addEventListener('input', (e) => {
+          const searchText = e.target.value.toLowerCase();
+          const filteredFolders = folders.filter(item => item.name.toLowerCase().includes(searchText));
+          renderFolders(filteredFolders);
         });
       })
       .catch(error => console.error('Error fetching folder list:', error));
