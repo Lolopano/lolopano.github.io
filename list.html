@@ -117,6 +117,8 @@
           }
         });
 
+        folders = data.filter(item => item.type === 'dir' && item.name.toLowerCase() !== 'public');
+
         renderFolders(folders);
 
         searchBar.addEventListener('input', (e) => {
