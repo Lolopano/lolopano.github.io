@@ -29,6 +29,14 @@
       gap: 20px;
       margin-top: 20px;
     }
+    a {
+      color: #bb86fc;
+      transition-duration: 300ms;
+    }
+    a:hover {
+      opacity: 70%;
+      transition-duration:300ms;
+    }
     .card {
       background: #1e1e1e;
       padding: 20px;
@@ -83,7 +91,11 @@
 <body>
   <h1>Skin Links</h1>
   <input type="text" id="searchBar" placeholder="Search folders...">
+  <p> Don't see your skin? Fill out <a
+  href="https://forms.gle/GNdWi3dkKrkdXzsC9">this form</a> to request
+  yours to be added! </p>
   <div class="container" id="folderList"></div>
+  <br></br>
 
   <script>
     const owner = 'lolopano';
@@ -116,6 +128,8 @@
             folders.push(item);
           }
         });
+
+        folders = data.filter(item => item.type === 'dir' && item.name.toLowerCase() !== 'public');
 
         renderFolders(folders);
 
