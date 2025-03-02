@@ -112,14 +112,17 @@
         function renderFolders(filteredData) {
           folderList.innerHTML = '';
           filteredData.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
             const link = document.createElement('a');
-            const url = `./${item.name}`;
-            link.href = url;
-            link.textContent = item.name;
-            card.appendChild(link);
-            folderList.appendChild(card);
+            link.className = 'card'; // Apply the card styling to the <a> element itself
+            link.href = `./${item.name}`;
+            link.style.textDecoration = 'none'; // Optional: Remove default underline
+            link.style.display = 'block'; // Ensures the entire element is clickable
+
+            const text = document.createElement('span');
+            text.textContent = item.name;
+            
+            link.appendChild(text);
+            folderList.appendChild(link);
           });
         }
 
